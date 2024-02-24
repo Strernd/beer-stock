@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.7",
+    "@vercel/kv": "^1.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "geist": "^1.2.2",
