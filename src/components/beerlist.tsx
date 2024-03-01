@@ -14,8 +14,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { subtractStock } from "@/lib/stock";
+import { setStock, subtractStock } from "@/lib/stock";
+import { Input } from "./ui/input";
 type Batch = Awaited<ReturnType<typeof getBatches>>[number];
 
 type BeerListProps = {
@@ -49,6 +59,7 @@ export function BeerList({ beers, initialStock }: BeerListProps) {
         stockDiff={calculateStockDiff(initialStock, stock)}
         reset={reset}
       />
+      <Inventory beers={beers} stock={initialStock} />
     </div>
   );
 }
@@ -128,6 +139,79 @@ function BeerCard({ details, stock, decreaseHandler }: BeerCardProps) {
       <Left />
       <Right />
     </div>
+  );
+}
+
+type InventoryProps = {
+  beers: Batch[];
+  stock: Record<string, number>;
+};
+
+function Inventory({ beers, stock }: InventoryProps) {
+  const beerList = beers.map((beer) => (
+    <SetBeerStockDialog key={beer.id} stock={stock[beer.id]} beer={beer} />
+  ));
+  return (
+    <Drawer>
+      <div className="w-full flex justify-end">
+        <DrawerTrigger className="w-full" asChild>
+          <Button className="w-full text-lg py-6">Set Inventory</Button>
+        </DrawerTrigger>
+      </div>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Inventory</DrawerTitle>
+        </DrawerHeader>
+        <div className="py-2 px-6 flex flex-col gap-2">{beerList}</div>
+        <DrawerFooter>
+          <DrawerClose>
+            <Button className="w-full" variant="outline">
+              Close
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+type SetBeerStockDialogProps = {
+  stock: number;
+  beer: Batch;
+};
+function SetBeerStockDialog({ stock, beer }: SetBeerStockDialogProps) {
+  const [value, setValue] = useState(stock);
+  const setHandler = async () => {
+    await setStock(beer.id, value);
+    console.log("setHandler", value);
+  };
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <p className="cursor-pointer text-start">
+          {stock} {beer.name}
+        </p>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Set Stock</DialogTitle>
+          <DialogDescription>
+            <h3 className="text-lg mb-2">{beer.name}</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                className=""
+                type="number"
+                value={value}
+                onChange={(e) => setValue(Number(e.currentTarget.value))}
+              />
+              <DialogClose asChild>
+                <Button onClick={setHandler}>Set</Button>
+              </DialogClose>
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 }
 

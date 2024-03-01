@@ -7,6 +7,13 @@ export async function getStock() {
   return (await kv.get("beer-stock_stock")) as Record<string, number>;
 }
 
+export async function setStock(beerId: string, stock: number) {
+  const currentStock = await getStock();
+  currentStock[beerId] = stock;
+  kv.set("beer-stock_stock", currentStock);
+  revalidatePath("/");
+}
+
 export async function subtractStock(change: Record<string, number>) {
   const stock = await getStock();
   for (const id in change) {
