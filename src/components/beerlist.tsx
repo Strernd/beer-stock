@@ -4,7 +4,7 @@ import { getBatches } from "@/lib/brewfather";
 import { GeistMono } from "geist/font/mono";
 import { cn } from "@/lib/utils";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -35,6 +35,10 @@ type BeerListProps = {
 export function BeerList({ beers, initialStock }: BeerListProps) {
   const [stock, setStock] = useState(initialStock);
   const reset = () => setStock(initialStock);
+  useEffect(() => {
+    setStock(initialStock);
+  }, [initialStock]);
+
   const decreaseHandler = (id: string) => {
     if (stock[id] === 0) return;
     setStock((stock) => ({ ...stock, [id]: stock[id] - 1 }));
@@ -88,7 +92,7 @@ function BeerCard({ details, stock, decreaseHandler }: BeerCardProps) {
         )}
         style={{ backgroundColor: details.colorRgb }}
       >
-        <span className="text-3xl">{digits[0]}</span>
+        <span className="text-4xl">{digits[0]}</span>
       </p>
       <p
         className={cn(
@@ -97,7 +101,7 @@ function BeerCard({ details, stock, decreaseHandler }: BeerCardProps) {
         )}
         style={{ backgroundColor: details.colorRgb }}
       >
-        <span className="text-3xl">{digits[1]}</span>
+        <span className="text-4xl">{digits[1]}</span>
       </p>
     </div>
   );
@@ -116,16 +120,16 @@ function BeerCard({ details, stock, decreaseHandler }: BeerCardProps) {
   );
 
   const LeftBottomRow = () => (
-    <div className="text-xs flex justify-between">
+    <div className="text-xs flex gap-2">
       <p>
         {details.abv}% - {details.ibu} IBU{" "}
       </p>
-      <p className="text-green-700">{lagered} days lagered</p>
+      <p className="text-green-700">lagered for {lagered} days</p>
     </div>
   );
 
   const Left = () => (
-    <div className="flex gap-2 w-full flex-col justify-between p-1 rounded shadow">
+    <div className="flex gap-2 w-full flex-col justify-between p-2 rounded-lg shadow-lg">
       <LeftTopRow />
       <LeftBottomRow />
     </div>
@@ -133,7 +137,7 @@ function BeerCard({ details, stock, decreaseHandler }: BeerCardProps) {
 
   return (
     <div
-      className="flex w-full gap-2 h-14 cursor-pointer"
+      className="flex w-full gap-2 h-16 bg-slate-10 cursor-pointer"
       onClick={() => decreaseHandler()}
     >
       <Left />

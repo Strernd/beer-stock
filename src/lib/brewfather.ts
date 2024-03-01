@@ -24,7 +24,7 @@ export type Batch = {
 
 export async function getBatches() {
   const res = await fetch(
-    "https://api.brewfather.app/v2/batches?limit=20&order_by=brewDate&order_by_direction=desc&status=Completed&include=recipe,measuredOg,measuredFg,measuredAbv,estimatedIbu,bottlingDate,notes",
+    "https://api.brewfather.app/v2/batches?limit=50&order_by=brewDate&order_by_direction=desc&status=Completed&include=recipe,measuredOg,measuredFg,measuredAbv,estimatedIbu,bottlingDate,notes",
     { headers: authHeader }
   );
   const data = res.json() as Promise<Batch[]>;
