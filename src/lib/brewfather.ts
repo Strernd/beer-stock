@@ -6,7 +6,7 @@ const authHeader = {
   Authorization: `Basic ${baseAuth}`,
 };
 
-export type Batch = {
+type ApiReturnBatch = {
   _id: string;
   batchNo: number;
   brewDate: number;
@@ -22,12 +22,14 @@ export type Batch = {
   notes: { status: string; timestamp: number }[];
 };
 
+export type Batch = Awaited<ReturnType<typeof getBatches>>[number];
+
 export async function getBatches() {
   const res = await fetch(
     "https://api.brewfather.app/v2/batches?limit=50&order_by=brewDate&order_by_direction=desc&status=Completed&include=recipe,measuredOg,measuredFg,measuredAbv,estimatedIbu,bottlingDate,notes",
     { headers: authHeader }
   );
-  const data = res.json() as Promise<Batch[]>;
+  const data = res.json() as Promise<ApiReturnBatch[]>;
   return (await data)
     .map((batch) => ({
       id: batch._id,
