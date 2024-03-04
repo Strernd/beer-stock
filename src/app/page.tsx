@@ -9,7 +9,7 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col max-w-screen-sm p-4 gap-6 mx-auto">
       <div className="flex gap-12 items-end justify-center">
         <Image src="/hopload.svg" width={70} height={70} alt="Hopload logo" />
-        <h1 className="text-3xl">Beer Stock</h1>
+        <h1 className="text-3xl">Bottle Stash</h1>
       </div>
       <div className="flex flex-col gap-4">
         <BeerStockList />
